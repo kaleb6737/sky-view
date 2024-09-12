@@ -1,0 +1,5 @@
+[project]
+name = "your-backend-project"
+
+[services.backend]
+path = "backend" # Path to your backend directory
