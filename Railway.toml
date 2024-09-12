@@ -1,5 +1,9 @@
 [project]
-name = "your-backend-project"
+name = "sky-view-financial-backend"
 
 [services.backend]
-path = "backend" # Path to your backend directory
+path = "server"  # This should point to your backend directory
+
+# Optional: Customize build and start commands
+build = "npm install"  # Use your actual backend build command
+start = "npm start"    # Use your actual backend start command
