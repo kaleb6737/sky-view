@@ -1,0 +1,5 @@
+// to not expose our .env to the public for security reasons 
+
+
+.env
+node_modules
