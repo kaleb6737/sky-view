@@ -32,11 +32,6 @@ app.use('/api/product', productRoutes);
 app.use('/api/transaction', transactionRoutes);
 app.use('/api/auth', authRoutes);
 
-// Default root route to avoid 404 for '/'
-app.get('/', (req, res) => {
-  res.send('Welcome to the API');
-});
-
 // Connect to MongoDB
 const PORT = process.env.PORT || 9000;
 const MONGO_URL = process.env.MONGO_URL;
