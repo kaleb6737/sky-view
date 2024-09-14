@@ -31,8 +31,7 @@ const Row2 = () => {
   const { palette } = useTheme();
   const pieColors = [palette.primary[800], palette.primary[300]];
   const { data: operationalData } = useGetKpisQuery();
-  const { data: productData, error: productError } = useGetProductsQuery();
-
+  const { data: productData, error: productError } = useGetProductsQuery<Product[]>();
 
   useEffect(() => {
     console.log("Product Data: ", productData);
