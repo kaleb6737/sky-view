@@ -5,7 +5,7 @@ import { GetKpisResponse, GetProductsResponse, GetTransactionsResponse, AuthResp
 // Define the API service
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:1337/api' }), // Base URL includes `/api`
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://sky-view-yjdf.onrender.com/api' }), // Base URL includes `/api`
   endpoints: (builder) => ({
     getKpis: builder.query<Array<GetKpisResponse>, void>({
       query: () => '/kpi/kpis',  // Correct path for KPI data

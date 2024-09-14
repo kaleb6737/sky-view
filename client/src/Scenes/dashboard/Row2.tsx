@@ -30,8 +30,10 @@ const pieData = [
 const Row2 = () => {
   const { palette } = useTheme();
   const pieColors = [palette.primary[800], palette.primary[300]];
+  
+  // Removed the typing here so that it can be inferred automatically
   const { data: operationalData } = useGetKpisQuery();
-  const { data: productData, error: productError } = useGetProductsQuery<Product[]>();
+  const { data: productData, error: productError } = useGetProductsQuery();
 
   useEffect(() => {
     console.log("Product Data: ", productData);
@@ -43,7 +45,7 @@ const Row2 = () => {
   const operationalExpenses = useMemo(() => {
     return (
       operationalData &&
-      operationalData[0].monthlyData.map(
+      operationalData[0]?.monthlyData.map(
         ({ month, operationalExpenses, nonOperationalExpenses }) => {
           return {
             name: month.substring(0, 3),
@@ -58,21 +60,11 @@ const Row2 = () => {
   const productExpenseData = useMemo(() => {
     if (!productData) return [];
 
-    if (!Array.isArray(productData)) {
-      console.error("Expected productData to be an array, but received:", productData);
-      return [];
-    }
-
-    return productData.map(({ _id, price, expense }) => {
-      if (_id === undefined || price === undefined || expense === undefined) {
-        console.error("Missing expected property in productData item:", { _id, price, expense });
-      }
-      return {
-        id: _id,
-        price: price,
-        expense: expense,
-      };
-    });
+    return productData.map(({ _id, price, expense }) => ({
+      id: _id,
+      price,
+      expense,
+    }));
   }, [productData]);
 
   return (
@@ -212,10 +204,7 @@ const Row2 = () => {
               data={productExpenseData}
               fill={palette.primary[300]}
             />
-           
-          
           </ScatterChart>
- 
         </ResponsiveContainer>
       </DashboardBox>
     </>
