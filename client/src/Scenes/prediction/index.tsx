@@ -19,10 +19,10 @@ import {
 import regression, { DataPoint } from 'regression';
 
 const EyeCatchingTypography = styled(Typography)(({ theme }) => ({
-  background: 'linear-gradient(90deg, #C0E8F8, #B0DFF2)', // Light blue gradient
+  background: 'linear-gradient(90deg, #C0E8F8, #B0DFF2)',
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
-  fontSize: '0.7rem', // Adjust as needed
+  fontSize: '0.9rem', // Larger for mobile, adjusted
   fontWeight: 'bold',
   textAlign: 'center',
   textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
@@ -30,6 +30,9 @@ const EyeCatchingTypography = styled(Typography)(({ theme }) => ({
   '&:hover': {
     transform: 'scale(1.05)',
     textShadow: '4px 4px 8px rgba(0, 0, 0, 0.7)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.75rem', // Smaller font size for small screens
   },
 }));
 
@@ -67,16 +70,34 @@ const Predictions = (props: {}) => {
   if (error) return <div>Error fetching data</div>;
 
   return (
-    <DashboardBox width="100%" height="100%" p="1rem" overflow="hidden">
-      <FlexBetween m="1rem 2.5rem" gap="1rem">
-        <Box>
-          <Typography variant="h3">Predictions</Typography>
+    <DashboardBox 
+      width="100%" 
+      height="100%" 
+      p={{ xs: "0.5rem", md: "1rem" }} // Adjust padding for mobile
+      overflow="hidden"
+    >
+      <FlexBetween 
+        m={{ xs: "0.5rem 1rem", md: "1rem 2.5rem" }} // Smaller margins for mobile
+        gap="1rem"
+        flexDirection={{ xs: 'column', md: 'row' }} // Stack elements vertically on small screens
+      >
+        <Box textAlign={{ xs: 'center', md: 'left' }}> {/* Center text on mobile */}
+          <Typography variant="h3" fontSize={{ xs: '20px', md: '28px' }}> {/* Responsive font size */}
+            Predictions
+          </Typography>
           <EyeCatchingTypography variant="h6">
             Visualized revenue and foresight based on a linear regression model analysis
           </EyeCatchingTypography>
         </Box>
 
-        <PredictionStyledButton onClick={() => setIsPredictions(!isPredictions)}>
+        <PredictionStyledButton
+          onClick={() => setIsPredictions(!isPredictions)}
+          sx={{
+            fontSize: { xs: '0.8rem', md: '1rem' }, // Responsive button text size
+            padding: { xs: '0.5rem 1rem', md: '0.75rem 1.5rem' }, // Adjust button padding for mobile
+            marginTop: { xs: '1rem', md: '0' }, // Add top margin on mobile
+          }}
+        >
           Toggle Predictions
         </PredictionStyledButton>
       </FlexBetween>
@@ -92,8 +113,18 @@ const Predictions = (props: {}) => {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke={palette.grey[800]} />
-          <XAxis dataKey="name" tickLine={false} style={{ fontSize: '10px' }}>
-            <Label value="Month" offset={-5} position="insideBottom" />
+          <XAxis
+            dataKey="name"
+            tickLine={false}
+            style={{ fontSize: '10px' }}
+            tick={{ fontSize: { xs: '8px', md: '10px' } }} // Responsive tick size
+          >
+            <Label
+              value="Month"
+              offset={-5}
+              position="insideBottom"
+              style={{ fontSize: { xs: '8px', md: '10px' } }} // Responsive label size
+            />
           </XAxis>
           <YAxis
             domain={[12000, 26000]}
@@ -101,9 +132,16 @@ const Predictions = (props: {}) => {
             tickLine={false}
             axisLine={false}
             style={{ fontSize: '10px' }}
+            tick={{ fontSize: { xs: '8px', md: '10px' } }} // Responsive tick size
             tickFormatter={(v) => `${v}`}
           >
-            <Label value="Revenue in CAD" angle={-90} offset={-5} position="insideLeft" />
+            <Label
+              value="Revenue in CAD"
+              angle={-90}
+              offset={-5}
+              position="insideLeft"
+              style={{ fontSize: { xs: '8px', md: '10px' } }} // Responsive label size
+            />
           </YAxis>
           <YAxis
             yAxisId="right"
@@ -111,9 +149,10 @@ const Predictions = (props: {}) => {
             tickLine={false}
             axisLine={false}
             style={{ fontSize: '10px' }}
+            tick={{ fontSize: { xs: '8px', md: '10px' } }} // Responsive tick size
           />
-          <Tooltip />
-          <Legend verticalAlign="top" />
+          <Tooltip contentStyle={{ fontSize: '10px' }} /> {/* Responsive tooltip size */}
+          <Legend verticalAlign="top" wrapperStyle={{ fontSize: '10px' }} /> {/* Responsive legend size */}
           <Line
             type="monotone"
             dataKey="Actual Revenue"

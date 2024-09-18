@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "@/Scenes/navbar";
 import DashBoard from "@/Scenes/dashboard";
 import Predictions from "@/Scenes/prediction";
-import Auth from "@/components/auth"; // Ensure you have the correct path to your Login component
+import AuthScreen from "@/components/SignupScreen"; // Ensure you have the correct path to your Login component
 import { themeSettings } from "./theme";
 
 const App: React.FC = () => {
@@ -22,11 +22,11 @@ const App: React.FC = () => {
             <Routes>
               {isAuthenticated ? (
                 <>
-                  <Route path="/" element={<DashBoard/>} />
-                  <Route path="predictions" element={<Predictions/>} />
+                  <Route path="/" element={<DashBoard />} />
+                  <Route path="/predictions" element={<Predictions />} />
                 </>
               ) : (
-                <Route path="*" element={<Auth setAuth={setAuthenticated}/>} />
+                <Route path="*" element={<AuthScreen setAuth={setAuthenticated} />} />
               )}
             </Routes>
           </Box>
@@ -34,6 +34,6 @@ const App: React.FC = () => {
       </BrowserRouter>
     </div>
   );
-}
+};
 
 export default App;
