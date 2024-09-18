@@ -1,57 +1,79 @@
 import React, { useState, useRef } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth } from '../firebase'; // Ensure your Firebase is properly initialized
 import { TextField, Button, Box, Typography, CssBaseline, Container, Snackbar } from '@mui/material';
 
-function AuthScreen({ setAuth }) {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+interface AuthScreenProps {
+  setAuth: (authStatus: boolean) => void; // Explicitly define the type for setAuth
+}
+
+function AuthScreen({ setAuth }: AuthScreenProps) {
+  // Define useRef types for email and password fields
+  const emailRef = useRef<HTMLInputElement>(null); 
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  // State variables
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isLogin, setIsLogin] = useState(true); // Toggle between Sign In and Sign Up
 
+  // Close the Snackbar notification
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
-  const register = (e) => {
+  // Register function to handle user sign up
+  const register = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    createUserWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
-      .then((authUser) => {
-        console.log(authUser);
-        setLoading(false);
-        setMessage('Registration successful!');
-        setSnackbarOpen(true);
-        setAuth(true);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setMessage(error.message);
-        setSnackbarOpen(true);
-      });
+
+    if (emailRef.current && passwordRef.current) {
+      createUserWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
+        .then((authUser) => {
+          console.log(authUser);
+          setLoading(false);
+          setMessage('Registration successful!');
+          setSnackbarOpen(true);
+          setAuth(true); // Trigger auth status update after registration
+        })
+        .catch((error) => {
+          setLoading(false);
+          setMessage(error.message);
+          setSnackbarOpen(true);
+        });
+    } else {
+      setMessage('Please fill in both fields.');
+      setSnackbarOpen(true);
+    }
   };
 
-  const signIn = (e) => {
+  // Sign In function to handle user login
+  const signIn = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    signInWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
-      .then((authUser) => {
-        console.log(authUser);
-        setLoading(false);
-        setMessage('Sign-in successful!');
-        setSnackbarOpen(true);
-        setAuth(true);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setMessage(error.message);
-        setSnackbarOpen(true);
-      });
+
+    if (emailRef.current && passwordRef.current) {
+      signInWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
+        .then((authUser) => {
+          console.log(authUser);
+          setLoading(false);
+          setMessage('Sign-in successful!');
+          setSnackbarOpen(true);
+          setAuth(true); // Trigger auth status update after sign in
+        })
+        .catch((error) => {
+          setLoading(false);
+          setMessage(error.message);
+          setSnackbarOpen(true);
+        });
+    } else {
+      setMessage('Please fill in both fields.');
+      setSnackbarOpen(true);
+    }
   };
 
-  // Toggle between Sign In and Sign Up
+  // Toggle between Sign In and Sign Up modes
   const toggleMode = () => {
     setIsLogin(!isLogin);
   };
@@ -83,7 +105,7 @@ function AuthScreen({ setAuth }) {
         >
           {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Register'}
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Box component="form" noValidate onSubmit={isLogin ? signIn : register} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -114,52 +136,30 @@ function AuthScreen({ setAuth }) {
               borderRadius: '8px',
             }}
           />
-          {isLogin ? (
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                background: 'linear-gradient(90deg, #1e88e5 0%, #42a5f5 100%)',
-                color: 'white',
-                fontWeight: 'bold',
-                padding: '0.75rem',
-                borderRadius: '10px',
-                '&:hover': {
-                  background: 'linear-gradient(90deg, #1565c0 0%, #1976d2 100%)',
-                },
-              }}
-              onClick={signIn}
-              disabled={loading}
-            >
-              Sign In
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              fullWidth
-              variant="outlined"
-              sx={{
-                mt: 1,
-                mb: 2,
-                color: '#1976d2',
-                borderColor: '#1976d2',
-                fontWeight: 'bold',
-                padding: '0.75rem',
-                borderRadius: '10px',
-                '&:hover': {
-                  borderColor: '#1565c0',
-                  color: '#1565c0',
-                },
-              }}
-              onClick={register}
-              disabled={loading}
-            >
-              Register
-            </Button>
-          )}
+          <Button
+            type="submit"
+            fullWidth
+            variant={isLogin ? "contained" : "outlined"}
+            sx={{
+              mt: 3,
+              mb: 2,
+              background: isLogin
+                ? 'linear-gradient(90deg, #1e88e5 0%, #42a5f5 100%)'
+                : 'transparent',
+              color: isLogin ? 'white' : '#1976d2',
+              fontWeight: 'bold',
+              padding: '0.75rem',
+              borderRadius: '10px',
+              '&:hover': {
+                background: isLogin
+                  ? 'linear-gradient(90deg, #1565c0 0%, #1976d2 100%)'
+                  : 'transparent',
+              },
+            }}
+            disabled={loading}
+          >
+            {isLogin ? 'Sign In' : 'Register'}
+          </Button>
         </Box>
 
         {/* Toggle between Sign In and Register */}
